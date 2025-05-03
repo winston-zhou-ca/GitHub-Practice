@@ -1,0 +1,46 @@
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment for deployment'
+        required: true
+        default: 'Dev'
+        type: choice
+        options:
+          - Dev
+          - QA/UAT
+          - Prod
+      database_type:
+        description: 'Database Engine Type'
+        required: true
+        type: choice
+        options:
+          - DB2
+          - MSSQL
+          - Oracle
+          - PostgreSQL
+      host:
+        description: 'FQDN of database server name or VIP'
+        required: true
+        type: string
+      port:
+        description: 'DB port number'
+        type: string
+        required: true
+      admin_user:
+        description: 'Admin User ID'
+        type: string
+        required: true
+      admin_passwd:
+        description: 'Password of Admin user'
+        type: string
+        required: true
+
+jobs:
+  admin_workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print environment
+        run: echo  Environment is are ${{ inputs.environment }} 
+      - name: Print database type
+        run: echo  Database type is are ${{ inputs.database_type }} 
