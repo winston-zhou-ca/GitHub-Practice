@@ -27,6 +27,10 @@ on:
         description: 'DB port number'
         type: string
         required: true
+      dbname:
+        description: 'DB Name'
+        type: string
+        required: true
       admin_user:
         description: 'Admin User ID'
         type: string
@@ -41,6 +45,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print environment
-        run: echo  Environment is are ${{ inputs.environment }} 
+        run: echo  Environment is ${{ inputs.environment }} 
       - name: Print database type
-        run: echo  Database type is are ${{ inputs.database_type }} 
+        run: echo  Database type is ${{ inputs.database_type }} 
