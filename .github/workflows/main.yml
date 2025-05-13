@@ -1,5 +1,15 @@
 on: 
-
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment for deployment'
+        required: true
+        default: 'Dev'
+        type: choice
+        options:
+          - Dev
+          - QA/UAT
+          - Prod
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
