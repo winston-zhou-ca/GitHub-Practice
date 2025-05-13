@@ -22,15 +22,13 @@ jobs:
             HOST="${BASH_REMATCH[2]}"
             DBNAME="${BASH_REMATCH[3]}"
             echo "stage=$STAGE" >> "$GITHUB_OUTPUT"
-			echo "host=$HOST" >> "$GITHUB_OUTPUT"
-            echo "db_name=$DBNAME" >> "$GITHUB_OUTPUT"						
+            echo "host=$HOST" >> "$GITHUB_OUTPUT"
+            echo "db_name=$DBNAME" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Call Deploy Workflow
-        uses:./.github/workflows/reusable_workflow.yml
+        uses: ./.github/workflows/reusable_workflow.yml
         with:
           stage: ${{ steps.extract_comment_info.outputs.stage }}
           host: ${{ steps.extract_comment_info.outputs.host }}
           db_name: ${{ steps.extract_comment_info.outputs.db_name }}
-		secrets:
-          inherit
