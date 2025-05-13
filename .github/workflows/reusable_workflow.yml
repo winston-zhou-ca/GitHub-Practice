@@ -1,0 +1,24 @@
+name: Reusable workflow 
+on:
+  workflow_call:
+    inputs:
+      stage:
+        description: Stage
+        required: true
+        type: string
+      host:
+        description: Host
+        required: true
+        type: string
+      db_name:
+        description: DB Name
+        required: true
+        type: string
+
+jobs:
+  test:
+    name: Run deployment tests
+    runs-on: ubuntu-latest  
+    steps:
+      - name: Test
+        run: echo "Deploying DB changes in ${{ inputs.db_name }} on ${{ inputs.host }} in ${{ inputs.stage }} environment"
