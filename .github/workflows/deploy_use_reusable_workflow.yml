@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4  # Added checkout step
+        uses: actions/checkout@v4
       - name: Call reusable workflow
         uses: ./.github/workflows/reusable_workflow.yml
         with:
