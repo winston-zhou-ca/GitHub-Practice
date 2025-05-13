@@ -20,7 +20,12 @@ jobs:
     name: Run deployment tests
     runs-on: ubuntu-latest  
     steps:
-      - name: checkout repo
-        uses: actions/checkout@v4    
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Debug checkout
+        run: |
+          echo "Current directory: $(pwd)"
+          ls -la
+          echo "Repository files are available"
       - name: Test
         run: echo "Deploying DB changes in ${{ inputs.db_name }} on ${{ inputs.host }} in ${{ inputs.stage }} environment"
