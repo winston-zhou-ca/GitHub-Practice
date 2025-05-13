@@ -26,9 +26,10 @@ jobs:
             echo "db_name=$DBNAME" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Call Deploy Workflow
-        uses: ./.github/workflows/reusable_workflow.yml
-        with:
+  call_deploy_workflow:
+    needs: deploy_dev
+    uses: ./.github/workflows/reusable_workflow.yml
+    with:
           stage: ${{ steps.extract_comment_info.outputs.stage }}
           host: ${{ steps.extract_comment_info.outputs.host }}
           db_name: ${{ steps.extract_comment_info.outputs.db_name }}
