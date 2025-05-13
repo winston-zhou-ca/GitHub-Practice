@@ -6,29 +6,42 @@ on:
     types: [created]
 
 jobs:
-  deploy_dev:
+  get_comment_info:
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.extract_comment_info.outputs.stage }}
+      output2: ${{ steps.extract_comment_info.outputs.host }}  
+      output3: ${{ steps.extract_comment_info.outputs.db_name }} 
     if: github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, '/liquibase ')
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Extract comment info
         id: extract_comment_info
         run: |
           COMMENT_BODY="${{ github.event.comment.body }}"
-          if [[ "$COMMENT_BODY" =~ /liquibase\ ([a-zA-Z0-9_-]+) ]]; then
+          if [[ "$COMMENT_BODY" =~ /liquibase\ ([a-zA-Z0-9_-]+)\ ([a-zA-Z0-9_-]+)\ ([a-zA-Z0-9_-]+) ]]; then
             STAGE="${BASH_REMATCH[1]}"
             HOST="${BASH_REMATCH[2]}"
             DBNAME="${BASH_REMATCH[3]}"
             echo "stage=$STAGE" >> "$GITHUB_OUTPUT"
             echo "host=$HOST" >> "$GITHUB_OUTPUT"
             echo "db_name=$DBNAME" >> "$GITHUB_OUTPUT"
+          else
+            echo "Invalid comment format. Expected: /liquibase <stage> <host> <dbname>"
+            exit 1
           fi
 
-      - name: Call Deploy Workflow
+  call_deploy_workflow:
+    needs: get_comment_info
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4  # Added checkout step
+      - name: Call reusable workflow
         uses: ./.github/workflows/reusable_workflow.yml
         with:
-          stage: ${{ steps.extract_comment_info.outputs.stage }}
-          host: ${{ steps.extract_comment_info.outputs.host }}
-          db_name: ${{ steps.extract_comment_info.outputs.db_name }}
+          stage: ${{ needs.get_comment_info.outputs.output1 }}
+          host: ${{ needs.get_comment_info.outputs.output2 }}
+          db_name: ${{ needs.get_comment_info.outputs.output3 }}
