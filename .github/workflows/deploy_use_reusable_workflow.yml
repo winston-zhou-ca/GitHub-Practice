@@ -1,13 +1,17 @@
 name: Deploy use reusable workflow
 on:
   pull_request:
-    types: [opened, reopened, closed]
+    types: [opened, synchronize, reopened, closed]
   issue_comment:
     types: [created]
 
 jobs:
-  deploy_dev:
+  get_comment_info:
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.extract_comment_info.outputs.stage }}
+      output2: ${{ ssteps.extract_comment_info.outputs.host }}
+	  output3: ${{ ssteps.extract_comment_info.outputs.db_name }}
     if: github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, '/liquibase ')
     steps:
       - name: Checkout code
@@ -27,9 +31,9 @@ jobs:
           fi
 
   call_deploy_workflow:
-    needs: deploy_dev
-    uses: ./.github/workflows/reusable_workflow.yml
+    needs: get_comment_info
+    uses:./.github/workflows/reusable_workflow.yml
     with:
-          stage: ${{ steps.extract_comment_info.outputs.stage }}
-          host: ${{ steps.extract_comment_info.outputs.host }}
-          db_name: ${{ steps.extract_comment_info.outputs.db_name }}
+          stage: ${{ needs.get_comment_info.outputs.output1 }}
+          host: ${{ needs.get_comment_info.outputs.output2 }}
+          db_name: ${{ needs.get_comment_info.outputs.output3 }}
